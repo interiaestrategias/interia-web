@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INTERIA — Estrategias con Impacto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Fondos */
+      --bg:         #070D18;
+      --surface:    #0D1827;
+      --surface-2:  #132035;
+
+      /* Celeste — color primario */
+      --primary:    #34C8E8;
+      --primary-dim:#1A9EB8;
+      --primary-lt: #9EE6F5;
+      --primary-glow: rgba(52, 200, 232, 0.14);
+
+      /* Complementario */
+      --violet:     #818CF8;
+      --violet-glow:rgba(129, 140, 248, 0.1);
+
+      /* Texto */
+      --text:       #EDF4FA;
+      --muted:      #C2CDD8;
+      --subtle:     #3D5A72;
+
+      /* Bordes */
+      --border:     rgba(52, 200, 232, 0.08);
+      --border-md:  rgba(52, 200, 232, 0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+    }
+
+    /* ── Fondo: mapa de líneas + anillos ── */
+    .bg-map {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bg-map svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── Patrón de puntos en el hero ── */
+    .dot-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(52, 200, 232, 0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(7, 13, 24, 0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      height: 46px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--primary);
+      color: var(--bg) !important;
+      padding: 8px 20px;
+      border-radius: 10px;
+      font-weight: 700 !important;
+      transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s !important;
+    }
+
+    .nav-cta:hover {
+      opacity: 0.9;
+      box-shadow: 0 0 22px rgba(52, 200, 232, 0.38);
+      transform: translateY(-1px);
+      color: var(--bg) !important;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      transition: all 0.3s;
+      border-radius: 2px;
+    }
+
+    /* ── HERO ── */
+    #inicio {
+      min-height: 100vh;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      padding: 124px 5% 88px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-orb-1 {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      top: -15%;
+      right: -12%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(52, 200, 232, 0.18) 0%, transparent 60%);
+      filter: blur(64px);
+      pointer-events: none;
+    }
+
+    .hero-orb-2 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      bottom: -12%;
+      left: -8%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26, 158, 184, 0.14) 0%, transparent 65%);
+      filter: blur(72px);
+      pointer-events: none;
+    }
+
+    .hero-orb-3 {
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      top: 30%;
+      left: 45%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(129, 140, 248, 0.1) 0%, transparent 70%);
+      filter: blur(48px);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 820px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: rgba(52, 200, 232, 0.08);
+      color: var(--primary);
+      font-size: 0.73rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border-md);
+      margin-bottom: 2rem;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
+      display: inline-block;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.08;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-title span {
+      color: var(--primary);
+      text-shadow: 0 0 40px rgba(52, 200, 232, 0.4);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 1.8vw, 1.12rem);
+      color: var(--muted);
+      max-width: 620px;
+      margin-bottom: 2.8rem;
+      font-weight: 400;
+      line-height: 1.75;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--bg);
+      padding: 14px 30px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(52, 200, 232, 0.38);
+    }
+
+    .btn-outline {
+      border: 1.5px solid var(--border-md);
+      color: var(--text);
+      padding: 13px 28px;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      background: var(--primary-glow);
+      color: var(--primary);
+    }
+
+    /* ── PILLARS — banda separadora ── */
+    #pilares {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 52px 5%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2.6rem;
+    }
+
+    .pilar {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .pilar-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      margin-bottom: 0.6rem;
+      opacity: 0.85;
+    }
+
+    .pilar h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+
+    .pilar p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 108px 5%; position: relative; z-index: 1; }
+
+    .section-label {
+      font-size: 0.71rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 1rem;
+      line-height: 1.13;
+      letter-spacing: -0.02em;
+    }
+
+    .section-intro {
+      color: var(--muted);
+      font-size: 0.98rem;
+      max-width: 600px;
+      margin-bottom: 3.8rem;
+      line-height: 1.8;
+    }
+
+    /* ── SERVICIOS ── */
+    #servicios { background: var(--bg); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 2.2rem 2rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 14px rgba(0, 0, 0, 0.22);
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 56px rgba(52, 200, 232, 0.12);
+      border-color: var(--border-md);
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .icon-sky    { background: rgba(52, 200, 232, 0.1);  }
+    .icon-violet { background: rgba(129, 140, 248, 0.1); }
+
+    .service-icon svg { width: 22px; height: 22px; }
+    .icon-sky svg     { stroke: var(--primary); }
+    .icon-violet svg  { stroke: var(--violet); }
+
+    .service-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.1rem;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+
+    .service-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .service-card ul li {
+      font-size: 0.84rem;
+      color: var(--muted);
+      padding-left: 1.1rem;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .service-card ul li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--primary-dim);
+      font-weight: 600;
+    }
+
+    /* ── EQUIPO ── */
+    #equipo { background: var(--surface); }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .team-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--surface-2);
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.22);
+      transition: box-shadow 0.22s, border-color 0.22s, transform 0.22s;
+    }
+
+    .team-card:hover {
+      box-shadow: 0 18px 52px rgba(52, 200, 232, 0.1);
+      border-color: var(--border-md);
+      transform: translateY(-2px);
+    }
+
+    .team-card-header {
+      background: rgba(52, 200, 232, 0.04);
+      border-bottom: 1px solid var(--border);
+      padding: 1.8rem 2rem 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .team-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(52, 200, 232, 0.1);
+      border: 1.5px solid var(--border-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--primary);
+      flex-shrink: 0;
+      letter-spacing: 0.04em;
+    }
+
+    .team-card-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .team-card-header p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+      font-weight: 500;
+    }
+
+    .team-card-body { padding: 1.8rem 2rem; }
+
+    .team-card-body p {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+      line-height: 1.75;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .team-card-body p:last-child { margin-bottom: 0; }
+
+    /* ── CONTACT ── */
+    #contacto {
+      background: var(--bg);
+      text-align: center;
+      padding: 108px 5%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #contacto::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 400px;
+      top: -5%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(52, 200, 232, 0.08) 0%, transparent 65%);
+      filter: blur(50px);
+      pointer-events: none;
+    }
+
+    .contact-divider {
+      width: 56px;
+      height: 3px;
+      background: var(--primary);
+      margin: 1.3rem auto 1.7rem;
+      border-radius: 2px;
+      box-shadow: 0 0 12px rgba(52, 200, 232, 0.6);
+    }
+
+    #contacto .section-label { color: var(--primary); position: relative; }
+    #contacto .section-title { color: var(--text); position: relative; }
+
+    #contacto p {
+      color: var(--muted);
+      max-width: 500px;
+      margin: 0 auto 2.6rem;
+      font-size: 0.98rem;
+      position: relative;
+      line-height: 1.75;
+    }
+
+    .contact-email {
+      display: inline-block;
+      background: transparent;
+      color: var(--primary);
+      padding: 16px 42px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.96rem;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      border: 1.5px solid var(--primary);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      position: relative;
+    }
+
+    .contact-email:hover {
+      background: var(--primary-glow);
+      box-shadow: 0 0 32px rgba(52, 200, 232, 0.28);
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      padding: 2.4rem 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer .logo {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+
+    footer .logo span { color: var(--primary); }
+
+    footer p {
+      font-size: 0.8rem;
+      color: var(--subtle);
+    }
+
+    /* ── SERVICE PURPOSE ── */
+    .service-purpose {
+      margin-top: 1.2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .service-purpose-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(52, 200, 232, 0.5);
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .service-purpose p {
+      font-size: 0.83rem;
+      color: var(--primary);
+      font-weight: 500;
+      line-height: 1.55;
+    }
+
+    /* ── HERO STATS ── */
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.6rem;
+      padding-top: 2.4rem;
+      margin-top: 0.4rem;
+      border-top: 1px solid rgba(52, 200, 232, 0.12);
+      align-items: flex-start;
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .hero-stat-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      margin-bottom: 0.55rem;
+      box-shadow:
+        0 0 0 4px rgba(52, 200, 232, 0.12),
+        0 0 0 8px rgba(52, 200, 232, 0.05),
+        0 0 12px rgba(52, 200, 232, 0.5);
+    }
+
+    .hero-stat-num {
+      display: block;
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      text-shadow: 0 0 24px rgba(52, 200, 232, 0.35);
+    }
+
+    .hero-stat-label {
+      font-size: 0.76rem;
+      color: rgba(255,255,255,0.38);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        top: 68px;
+        left: 0; right: 0;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 1.4rem 5% 1.8rem;
+        gap: 1.2rem;
+      }
+
+      .nav-links.open { display: flex; }
+
+      .nav-cta { display: none; }
+
+      .hamburger { display: flex; }
+
+      .hero-ctas { flex-direction: column; }
+
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FONDO: MAPA + ANILLOS -->
+  <div class="bg-map" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="fadeH" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#34C8E8" stop-opacity="0"/>
+          <stop offset="20%"  stop-color="#34C8E8" stop-opacity="1"/>
+          <stop offset="80%"  stop-color="#34C8E8" stop-opacity="1"/>
+          <stop offset="100%" stop-color="#34C8E8" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="fadeH2" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#818CF8" stop-opacity="0"/>
+          <stop offset="30%"  stop-color="#818CF8" stop-opacity="1"/>
+          <stop offset="70%"  stop-color="#818CF8" stop-opacity="1"/>
+          <stop offset="100%" stop-color="#818CF8" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Curvas tipo mapa — celeste -->
+      <path d="M-80,120 C120,80 280,200 480,140 S780,60 960,130 S1200,200 1520,110"
+            fill="none" stroke="url(#fadeH)" stroke-width="0.8" opacity="0.18"/>
+      <path d="M-80,240 C80,200 300,300 520,230 S820,160 1000,240 S1240,310 1520,220"
+            fill="none" stroke="url(#fadeH)" stroke-width="0.8" opacity="0.14"/>
+      <path d="M-80,390 C160,340 380,460 600,380 S880,290 1100,370 S1340,440 1520,360"
+            fill="none" stroke="url(#fadeH)" stroke-width="0.8" opacity="0.12"/>
+      <path d="M-80,530 C200,480 420,590 640,510 S920,420 1140,510 S1360,580 1520,500"
+            fill="none" stroke="url(#fadeH)" stroke-width="0.8" opacity="0.1"/>
+      <path d="M-80,670 C180,620 440,730 680,650 S960,560 1200,650 S1400,710 1520,640"
+            fill="none" stroke="url(#fadeH)" stroke-width="0.8" opacity="0.08"/>
+      <path d="M-80,800 C220,760 500,850 740,780 S1020,700 1260,780 S1420,840 1520,780"
+            fill="none" stroke="url(#fadeH)" stroke-width="0.8" opacity="0.07"/>
+
+      <!-- Curvas diagonales — violeta -->
+      <path d="M-100,500 C200,300 500,700 800,400 S1100,100 1540,350"
+            fill="none" stroke="url(#fadeH2)" stroke-width="0.7" opacity="0.1"/>
+      <path d="M-100,700 C300,500 600,800 900,550 S1200,300 1540,500"
+            fill="none" stroke="url(#fadeH2)" stroke-width="0.7" opacity="0.07"/>
+
+      <!-- Anillos decorativos — celeste, solo borde -->
+      <circle cx="1150" cy="160"  r="220" fill="none" stroke="#34C8E8" stroke-width="0.8" opacity="0.07"/>
+      <circle cx="1150" cy="160"  r="340" fill="none" stroke="#34C8E8" stroke-width="0.6" opacity="0.05"/>
+      <circle cx="1150" cy="160"  r="480" fill="none" stroke="#34C8E8" stroke-width="0.5" opacity="0.03"/>
+
+      <circle cx="220"  cy="750"  r="180" fill="none" stroke="#34C8E8" stroke-width="0.8" opacity="0.06"/>
+      <circle cx="220"  cy="750"  r="300" fill="none" stroke="#34C8E8" stroke-width="0.6" opacity="0.04"/>
+
+      <!-- Anillo violeta — centro -->
+      <circle cx="720"  cy="450"  r="260" fill="none" stroke="#818CF8" stroke-width="0.6" opacity="0.05"/>
+      <circle cx="720"  cy="450"  r="420" fill="none" stroke="#818CF8" stroke-width="0.5" opacity="0.03"/>
+
+      <!-- Puntos de intersección (nodos de mapa) -->
+      <circle cx="480"  cy="140"  r="2.5" fill="#34C8E8" opacity="0.25"/>
+      <circle cx="960"  cy="130"  r="2.5" fill="#34C8E8" opacity="0.25"/>
+      <circle cx="520"  cy="230"  r="2"   fill="#34C8E8" opacity="0.2"/>
+      <circle cx="1000" cy="240"  r="2"   fill="#34C8E8" opacity="0.2"/>
+      <circle cx="600"  cy="380"  r="2"   fill="#34C8E8" opacity="0.18"/>
+      <circle cx="1100" cy="370"  r="2"   fill="#34C8E8" opacity="0.18"/>
+      <circle cx="640"  cy="510"  r="1.5" fill="#34C8E8" opacity="0.15"/>
+      <circle cx="800"  cy="400"  r="2"   fill="#818CF8" opacity="0.2"/>
+    </svg>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#inicio" class="nav-logo">
+      <img src="LOGO3.png" alt="INTERIA — Estrategias con Impacto" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#equipo">Equipo</a></li>
+      <li><a href="#contacto" class="nav-cta">Contacto</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section id="inicio">
+    <div class="dot-grid"></div>
+    <div class="hero-orb-1"></div>
+    <div class="hero-orb-2"></div>
+    <div class="hero-orb-3"></div>
+    <div class="hero-inner">
+      <div class="hero-tag">Estrategias con Impacto</div>
+      <h1 class="hero-title">Políticas y programas<br>que <span>transforman</span></h1>
+      <p class="hero-subtitle">
+        Trabajamos con gobiernos, organizaciones de la sociedad civil y organismos internacionales en el desarrollo de iniciativas sólidas, viables y alineadas con el entorno institucional. Integramos herramientas digitales, análisis de datos y metodologías de innovación para fortalecer la toma de decisiones.
+      </p>
+      <div class="hero-ctas">
+        <a href="#servicios" class="btn-primary">Ver servicios →</a>
+        <a href="#equipo" class="btn-outline">Conocer el equipo</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-dot"></div>
+          <span class="hero-stat-num">+10</span>
+          <p class="hero-stat-label">Años de experiencia</p>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-dot"></div>
+          <span class="hero-stat-num">3</span>
+          <p class="hero-stat-label">Especialidades integradas</p>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-dot"></div>
+          <span class="hero-stat-num">360°</span>
+          <p class="hero-stat-label">Ciclo de proyecto</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PILLARS STRIP -->
+  <div id="pilares">
+    <div class="pilar">
+      <div class="pilar-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="22" x2="21" y2="22"/>
+          <line x1="6" y1="18" x2="6" y2="11"/>
+          <line x1="10" y1="18" x2="10" y2="11"/>
+          <line x1="14" y1="18" x2="14" y2="11"/>
+          <line x1="18" y1="18" x2="18" y2="11"/>
+          <polygon points="12 2 20 7 4 7"/>
+        </svg>
+      </div>
+      <h4>Gestión institucional</h4>
+      <p>Fortalecimiento de capacidades en organismos públicos</p>
+    </div>
+    <div class="pilar">
+      <div class="pilar-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+          <line x1="2" y1="20" x2="22" y2="20"/>
+        </svg>
+      </div>
+      <h4>Datos y evidencia</h4>
+      <p>Decisiones basadas en información y análisis riguroso</p>
+    </div>
+    <div class="pilar">
+      <div class="pilar-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"/>
+          <circle cx="6" cy="12" r="3"/>
+          <circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+      </div>
+      <h4>Articulación de actores</h4>
+      <p>Construcción de consensos entre sectores clave</p>
+    </div>
+    <div class="pilar">
+      <div class="pilar-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>
+      <h4>Enfoque territorial</h4>
+      <p>Intervenciones situadas y contextualizadas</p>
+    </div>
+  </div>
+
+  <!-- SERVICIOS -->
+  <section id="servicios">
+    <div class="section-label">¿Qué hacemos?</div>
+    <h2 class="section-title">Nuestros servicios</h2>
+    <p class="section-intro">
+      Acompañamos de manera integral todo el ciclo de los proyectos: desde el diagnóstico y el diseño, hasta el desarrollo normativo, la implementación y la evaluación de resultados.
+    </p>
+
+    <div class="services-grid">
+
+      <div class="service-card">
+        <div class="service-icon icon-sky">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        </div>
+        <h3>Diseño de políticas y programas</h3>
+        <ul>
+          <li>Diagnóstico institucional y territorial</li>
+          <li>Formulación de programas y proyectos</li>
+          <li>Planificación estratégica</li>
+          <li>Diseño de intervenciones y dispositivos</li>
+        </ul>
+        <div class="service-purpose">
+          <span class="service-purpose-label">Para qué sirve</span>
+          <p>Desarrollar políticas y proyectos viables, alineados al contexto institucional y territorial.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon icon-violet">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <h3>Gestión e implementación</h3>
+        <ul>
+          <li>Puesta en marcha de programas</li>
+          <li>Coordinación de equipos técnicos</li>
+          <li>Articulación interinstitucional</li>
+          <li>Desarrollo operativo de iniciativas</li>
+        </ul>
+        <div class="service-purpose">
+          <span class="service-purpose-label">Para qué sirve</span>
+          <p>Convertir diseños en acciones concretas y sostenibles.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon icon-sky">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+        </div>
+        <h3>Desarrollo normativo y fortalecimiento institucional</h3>
+        <ul>
+          <li>Elaboración de proyectos de ley y normativa</li>
+          <li>Redacción técnica y desarrollo de lineamientos, protocolos y políticas internas</li>
+          <li>Diseño de instrumentos de gestión y fortalecimiento organizacional</li>
+          <li>Asistencia técnica a organismos públicos y organizaciones de la sociedad civil</li>
+        </ul>
+        <div class="service-purpose">
+          <span class="service-purpose-label">Para qué sirve</span>
+          <p>Fortalecer las capacidades institucionales y mejorar la capacidad de implementación e incidencia.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon icon-violet">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <h3>Monitoreo y evaluación</h3>
+        <ul>
+          <li>Construcción de indicadores</li>
+          <li>Seguimiento de programas</li>
+          <li>Evaluación de resultados e impacto</li>
+          <li>Sistematización de información</li>
+        </ul>
+        <div class="service-purpose">
+          <span class="service-purpose-label">Para qué sirve</span>
+          <p>Mejorar decisiones y ajustar políticas y proyectos en tiempo real.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon icon-sky">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <h3>Investigación y análisis</h3>
+        <ul>
+          <li>Estudios sectoriales</li>
+          <li>Análisis de políticas públicas</li>
+          <li>Producción de informes técnicos</li>
+          <li>Generación de evidencia</li>
+        </ul>
+        <div class="service-purpose">
+          <span class="service-purpose-label">Para qué sirve</span>
+          <p>Sustentar decisiones con información rigurosa.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon icon-violet">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <h3>Capacitaciones</h3>
+        <ul>
+          <li>Elaboración de contenidos formativos</li>
+          <li>Diseño de propuestas formativas a medida, adaptadas a demandas y necesidades específicas de cada organización</li>
+        </ul>
+        <div class="service-purpose">
+          <span class="service-purpose-label">Para qué sirve</span>
+          <p>Fortalecer capacidades para la gestión institucional y potenciar las habilidades técnicas.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EQUIPO -->
+  <section id="equipo">
+    <div class="section-label">Las personas detrás</div>
+    <h2 class="section-title">Nuestro equipo</h2>
+    <p class="section-intro">
+      Un equipo interdisciplinario con experiencia en gestión legislativa, administración pública, trabajo con organizaciones sociales y abordaje territorial.
+    </p>
+    <p class="section-intro" style="margin-top: -2rem; margin-bottom: 3.8rem; font-style: italic;">
+      Mirada federal con experiencia en distintas jurisdicciones del país.
+    </p>
+
+    <div class="team-grid">
+
+      <div class="team-card">
+        <div class="team-card-header">
+          <div class="team-avatar">AL</div>
+          <div>
+            <h3>Mg. Ana Laura Mansilla</h3>
+            <p>Abogada | Políticas Públicas y Gestión Estatal</p>
+          </div>
+        </div>
+        <div class="team-card-body">
+          <p>Profesional con más de diez años de trayectoria en la administración pública. Se desempeña en el desarrollo de instrumentos técnicos, normativos y administrativos, así como en la asistencia a organismos estatales para el fortalecimiento de capacidades de gestión en gobiernos provinciales y municipales.</p>
+          <p>Cuenta con competencias en gestión de proyectos, orientadas a la planificación, coordinación y ejecución eficiente de iniciativas públicas.</p>
+          <p>Aporta una mirada estratégica orientada a la mejora de procesos, la optimización de recursos y el fortalecimiento institucional, contribuyendo a la toma de decisiones y a la implementación de políticas públicas con impacto.</p>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-card-header">
+          <div class="team-avatar">JC</div>
+          <div>
+            <h3>Mg. Jazmín Cosentino</h3>
+            <p>Trabajadora Social | Programas Sociales y Políticas Públicas</p>
+          </div>
+        </div>
+        <div class="team-card-body">
+          <p>Profesional con más de diez años de trayectoria en el diseño, implementación y evaluación de políticas y programas sociales, tanto en el ámbito público como en organizaciones de la sociedad civil.</p>
+          <p>Se desempeña en el desarrollo de estrategias de intervención en contextos de alta complejidad, particularmente en el campo de la salud, integrando abordajes territoriales, articulación interinstitucional y trabajo con poblaciones en situación de vulnerabilidad.</p>
+          <p>Cuenta con competencias en formulación, monitoreo y evaluación de proyectos, así como en la elaboración de informes técnicos y producción de insumos para la toma de decisiones.</p>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-card-header">
+          <div class="team-avatar">ME</div>
+          <div>
+            <h3>Mg. Marianela Etchalus</h3>
+            <p>Ciencia Política | Gestión Legislativa y Asuntos Públicos</p>
+          </div>
+        </div>
+        <div class="team-card-body">
+          <p>Profesional con más de diez años de trayectoria en asesoramiento legislativo, análisis de políticas públicas y relaciones gubernamentales, tanto en el ámbito nacional como en articulación con gobiernos subnacionales.</p>
+          <p>Se desempeña en el análisis del entorno regulatorio y el diseño de estrategias legislativas, con capacidad para traducir agendas públicas en iniciativas normativas concretas y viables.</p>
+          <p>Cuenta con competencias en articulación interinstitucional, construcción de consensos y gestión de agendas estratégicas, aportando una mirada integral sobre los procesos institucionales y la toma de decisiones públicas.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <div class="section-label">Trabajemos juntos</div>
+    <h2 class="section-title">¿Necesitás asesoramiento?</h2>
+    <div class="contact-divider"></div>
+    <p>
+      Transformamos ideas en proyectos concretos.
+    </p>
+    <a href="mailto:interia.estrategias@gmail.com" class="contact-email">Contactanos</a>
+    <p style="margin-top: 1.4rem; margin-bottom: 0; font-size: 0.86rem; color: var(--subtle);">interia.estrategias@gmail.com</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <img src="LOGO3.png" alt="INTERIA — Estrategias con Impacto" style="height:32px; width:auto; display:block;" />
+    <p>Estrategias con Impacto &nbsp;·&nbsp; © 2026</p>
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+  </script>
+
+</body>
+</html>
